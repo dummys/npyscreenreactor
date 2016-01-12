@@ -34,31 +34,36 @@ from twisted.internet import selectreactor
 
 import npyscreen
 
+
 class NpyscreenReactor(selectreactor.SelectReactor):
     """
     npyscreen reactor.
 
     npyscreen drives the event loop
     """
+
     def doIteration(self, timeout):
-	# Executing what normal reactor would do...
-	self.runUntilCurrent()
 
-	selectreactor.SelectReactor.doIteration(self, timeout)
+    # Executing what normal reactor would do...
+    self.runUntilCurrent()
 
-	# push event back on the npyscreen queue
-	self.npyscreenapp.queue_event(npyscreen.Event("_NPYSCREEN_REACTOR"))
+    selectreactor.SelectReactor.doIteration(self, timeout)
+
+    # push event back on the npyscreen queue
+    self.npyscreenapp.queue_event(npyscreen.Event("_NPYSCREEN_REACTOR"))
 
     def registerNpyscreenApp(self, npyscreenapp):
         """
         Register npyscreen.StandardApp instance with the reactor.
         """
         self.npyscreenapp = npyscreenapp
-	# push an event on the npyscreen queue
-	self.npyscreenapp.add_event_hander("_NPYSCREEN_REACTOR", self._twisted_events)
+
+    # push an event on the npyscreen queue
+    self.npyscreenapp.add_event_hander("_NPYSCREEN_REACTOR", self._twisted_events)
 
     def _twisted_events(self, event):
-	self.doIteration(0)
+
+        self.doIteration(0)
 
     def _stopNpyscreen(self):
         """
@@ -69,21 +74,21 @@ class NpyscreenReactor(selectreactor.SelectReactor):
         if hasattr(self, "npyscreenapp"):
             self.npyscreenapp.setNextForm(None)
 
-    def run(self,installSignalHandlers=True):
+    def run(self, installSignalHandlers=True):
         """
         Start the reactor.
         """
-	# Executing what normal reactor would do...
-	self.startRunning(installSignalHandlers=installSignalHandlers)
- 
-	# do initial iteration and put event on queue to do twisted things 
-	self.doIteration(0)
 
-        # add cleanup events:
-        self.addSystemEventTrigger("after", "shutdown", self._stopNpyscreen)
+    # Executing what normal reactor would do...
+    self.startRunning(installSignalHandlers=installSignalHandlers)
 
-	#
-        self.npyscreenapp.run()
+    # do initial iteration and put event on queue to do twisted things
+    self.doIteration(0)  # add cleanup events:
+    self.addSystemEventTrigger("after", "shutdown", self._stopNpyscreen)
+
+    #
+    self.npyscreenapp.run()
+
 
 def install():
     """
