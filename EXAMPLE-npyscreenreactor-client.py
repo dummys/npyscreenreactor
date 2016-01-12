@@ -41,50 +41,48 @@ class TestProtocol(LineReceiver):
 class TestClientFactory(protocol.ClientFactory):
     def __init__(self, app):
         self.app = app
-
-    app.set_factory(self)
+        app.set_factory(self)
 
     def startedConnecting(self, connector):
         line = 'Started connecting'
+        self.app.connector = connector
 
-    self.app.connector = connector
-
-    # self.app.line_to_buffer(line)
+        # self.app.line_to_buffer(line)
 
     def buildProtocol(self, addr):
         line = 'Building protocol'
         self.instance = self.protocol(self.app)
 
-    self.instance.delimiter = "\n"
-    self.app.set_instance(self.instance)
-    self.instance.setLineMode()
-    return self.instance
+        self.instance.delimiter = "\n"
+        self.app.set_instance(self.instance)
+        self.instance.setLineMode()
+        return self.instance
 
 
 def clientConnectionLost(self, connector, reason):
 
 
     self.app.connector = connector
-line = """
-Lost connection.
-Reason: %s
+    line = """
+    Lost connection.
+    Reason: %s
 
-Type ^Q to exit, hit ENTER to (re) connect
-""" % reason
-self.app.lines_to_buffer(line)
+    Type ^Q to exit, hit ENTER to (re) connect
+    """ % reason
+    self.app.lines_to_buffer(line)
 
 
 def clientConnectionFailed(self, connector, reason):
 
 
     self.app.connector = connector
-line = """
-Connection failed.
-Reason: %s
+    line = """
+    Connection failed.
+    Reason: %s
 
-Type ^Q to exit, hit ENTER to (re) connect
-""" % reason
-self.app.lines_to_buffer(line)
+    Type ^Q to exit, hit ENTER to (re) connect
+    """ % reason
+    self.app.lines_to_buffer(line)
 
 
 class EditorFormExample(npyscreen.FormMutt):
@@ -93,14 +91,14 @@ class EditorFormExample(npyscreen.FormMutt):
     def __init__(self, *args, **keywords):
 
         super(npyscreen.FormMutt, self).__init__(*args, **keywords)
-    self.wCommand.add_handlers({
+        self.wCommand.add_handlers({
         curses.ascii.NL: self.do_line,
         curses.ascii.CR: self.do_line,
         "^Q": self.exit_application,
-    })
-    self.wMain.add_handlers({
+        })
+        self.wMain.add_handlers({
         "^Q": self.exit_application,
-    })
+        })
 
     def do_line(self, name):
 
@@ -128,34 +126,34 @@ class TestApp(npyscreen.StandardApp):
 
         self.connector = None
 
-    # connection details
-    host = "127.0.0.1"
-    port = 5000
+        # connection details
+        host = "127.0.0.1"
+        port = 5000
 
-    intro = """
-%s
+        intro = """
+        %s
 
-Welcome to the twisted npyscreen reactor client example.
+        Welcome to the twisted npyscreen reactor client example.
 
-Type ^Q to exit, hit ENTER to (re) connect
+        Type ^Q to exit, hit ENTER to (re) connect
 
-Connecting to %s on %s
-...
-""" % (__file__, host, port)
+        Connecting to %s on %s
+        ...
+        """ % (__file__, host, port)
 
-    factory = TestClientFactory(App)
-    factory.protocol = TestProtocol
-    self.reactor.connectTCP(host, port, factory)
-    self.F = self.addForm('MAIN', EditorFormExample)
-    self.F.wStatus1.value = "Status Line "
-    self.F.wStatus2.value = "Enter text to send ...."
-
-
-self.lines_to_buffer(intro)
+        factory = TestClientFactory(App)
+        factory.protocol = TestProtocol
+        self.reactor.connectTCP(host, port, factory)
+        self.F = self.addForm('MAIN', EditorFormExample)
+        self.F.wStatus1.value = "Status Line "
+        self.F.wStatus2.value = "Enter text to send ...."
 
 
-# set initial focus
-# how to do this?
+        self.lines_to_buffer(intro)
+
+
+        # set initial focus
+        # how to do this?
 
 
 def when_exit(self, val):
@@ -164,41 +162,35 @@ def when_exit(self, val):
 
 def lines_to_buffer(self, lines):
 
-
     for line in lines.split("\n"):
         self.line_to_buffer(line)
 
 
 def line_to_buffer(self, line):
 
-
     self.F.wMain.buffer((line,))
-self.F.display()
+    self.F.display()
 
 
 def process_line(self):
 
-
     self.instance.sendLine(self.F.wCommand.value)
-self.line_to_buffer(self.F.wCommand.value)
-self.F.wCommand.value = ""
-self.F.display()
+    self.line_to_buffer(self.F.wCommand.value)
+    self.F.wCommand.value = ""
+    self.F.display()
 
 
 def set_reactor(self, reactor):
-
 
     self.reactor = reactor
 
 
 def set_factory(self, factory):
 
-
     self.factory = factory
 
 
 def set_instance(self, instance):
-
 
     self.instance = instance
 

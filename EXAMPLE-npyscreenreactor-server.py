@@ -23,20 +23,18 @@ class MyTestApp(npyscreen.StandardApp):
     def updateFields(self, received="", sent=""):
 
         self.sent = sent
-    self.received = received
+        self.received = received
 
     def onStart(self):
 
         self.keypress_timeout_default = 1
-    self.addForm("MAIN", MainForm, name="EXAMPLE-npyscreenreactor", color="IMPORTANT", )
+        self.addForm("MAIN", MainForm, name="EXAMPLE-npyscreenreactor", color="IMPORTANT", )
 
-
-self.sent = ""
-self.currentform = None
+        self.sent = ""
+        self.currentform = None
 
 
 def while_waiting(self):
-
 
     pass
 
@@ -54,17 +52,17 @@ class MainForm(npyscreen.ActionForm):
     def create(self):
 
         self.keypress_timeout_default = 1
-    self.sentfield = self.add(npyscreen.TitleText, name="Sent:", value="", editable=False)
-    self.receivedfield = self.add(npyscreen.TitleText, name="Received:", value="", editable=False)
+        self.sentfield = self.add(npyscreen.TitleText, name="Sent:", value="", editable=False)
+        self.receivedfield = self.add(npyscreen.TitleText, name="Received:", value="", editable=False)
 
 
 def while_waiting(self):
 
 
     self.sentfield.value = self.parentApp.sent
-self.receivedfield.value = self.parentApp.received
-self.sentfield.display()
-self.receivedfield.display()
+    self.receivedfield.value = self.parentApp.received
+    self.sentfield.display()
+    self.receivedfield.display()
 
 
 def on_ok(self):
@@ -78,19 +76,19 @@ class Echo(protocol.Protocol):
     def dataReceived(self, data):
         "As soon as any data is received, write it back."
 
-    response = 'OK ... ' + data
-    self.transport.write(response)
+        response = 'OK ... ' + data
+        self.transport.write(response)
 
-    # update fields
-    self.factory.app.updateFields(data, response)
+        # update fields
+        self.factory.app.updateFields(data, response)
 
     def connectionMade(self):
 
         response = "OK ... Hello there ...\n"
-    data = "Connection from " + str(self.transport.getPeer())
+        data = "Connection from " + str(self.transport.getPeer())
 
-    self.transport.write(response)
-    self.factory.app.updateFields(data, response)
+        self.transport.write(response)
+        self.factory.app.updateFields(data, response)
 
 
 class EchoFactory(protocol.Factory):
